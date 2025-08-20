@@ -20,50 +20,7 @@ The AI Travel Planner is an intelligent web application that generates personali
 
 ## 2. System Architecture
 
-### 2.1 High-Level Architecture Overview
-
-```mermaid
-graph TB
-    subgraph "🌐 User Interface Layer"
-        UI["🖥️ Streamlit Web App<br/>• Responsive Design<br/>• Custom Styling<br/>• Form Handling"]
-        TEMP["🎨 Templates & Styling<br/>• CSS Animations<br/>• UI Components<br/>• Responsive Layout"]
-    end
-    
-    subgraph "🧠 Business Logic Layer"
-        PLANNER["📋 Travel Planner Core<br/>• Trip Orchestration<br/>• Data Validation<br/>• Workflow Management"]
-        CHAIN["🔗 LLM Chain<br/>• AI Model Integration<br/>• Prompt Management<br/>• Response Processing"]
-    end
-    
-    subgraph "🔧 Infrastructure Layer"
-        CONFIG["⚙️ Configuration<br/>• YAML Settings<br/>• Environment Variables<br/>• Path Management"]
-        UTILS["🛠️ Utilities<br/>• Logging System<br/>• Exception Handling<br/>• Common Functions"]
-    end
-    
-    subgraph "☁️ External Services"
-        GROQ["🤖 Groq API<br/>• LLM Processing<br/>• AI Generation<br/>• Natural Language"]
-    end
-    
-    UI --> PLANNER
-    PLANNER --> CHAIN
-    CHAIN --> GROQ
-    TEMP --> UI
-    CONFIG --> PLANNER
-    CONFIG --> CHAIN
-    UTILS --> PLANNER
-    UTILS --> CHAIN
-    
-    classDef frontend fill:#e1f5fe,stroke:#01579b,stroke-width:2px
-    classDef business fill:#f3e5f5,stroke:#4a148c,stroke-width:2px
-    classDef infra fill:#e8f5e8,stroke:#1b5e20,stroke-width:2px
-    classDef external fill:#fff3e0,stroke:#e65100,stroke-width:2px
-    
-    class UI,TEMP frontend
-    class PLANNER,CHAIN business
-    class CONFIG,UTILS infra
-    class GROQ external
-```
-
-### 2.2 Detailed System Flow
+### 2.1 Detailed System Flow
 
 ```mermaid
 sequenceDiagram
@@ -93,7 +50,7 @@ sequenceDiagram
     Note over U,LOG: Real-time streaming with comprehensive logging
 ```
 
-### 2.3 Layered Architecture Design
+### 2.2 Layered Architecture Design
 
 ```mermaid
 graph LR
@@ -157,7 +114,7 @@ graph LR
     class D1,D2,D3 data
 ```
 
-### 2.4 Component Interaction Matrix
+### 2.3 Component Interaction Matrix
 
 | Component | Frontend | Planner | LLM Chain | Config | Utils | External API |
 |-----------|----------|---------|-----------|--------|-------|-------------|
@@ -215,90 +172,7 @@ graph LR
 
 ## 4. Project Structure & Architecture
 
-### 4.1 Directory Tree with Visual Hierarchy
-
-```mermaid
-graph TD
-    ROOT["🏠 AI-TRAVELL-PLANNER/"]
-    
-    subgraph "🧠 Core Business Logic"
-        CORE["📁 core/"]
-        CHAINS["📁 chains/"]
-        CORE_PY["📄 planner.py"]
-        CHAIN_PY["📄 itinerary_chain.py"]
-    end
-    
-    subgraph "🎨 User Interface"
-        TEMPLATES["📁 templates/"]
-        MAIN["📄 main.py"]
-        STYLE["📄 style.py"]
-    end
-    
-    subgraph "⚙️ Configuration"
-        CONFIG["📁 config/"]
-        CONFIG_YAML["📄 config.yaml"]
-        API_CONFIG["📄 api_config.py"]
-        PATH_CONFIG["📄 path_config.py"]
-    end
-    
-    subgraph "🛠️ Utilities"
-        UTILS["📁 utils/"]
-        LOGGER["📄 logger.py"]
-        EXCEPTION["📄 custom_exception.py"]
-        COMMON["📄 common_function.py"]
-    end
-    
-    subgraph "📊 Data & Logs"
-        LOGS["📁 logs/"]
-        ENV["📄 .env"]
-        LOG_FILES["📄 log_YYYY-MM-DD.log"]
-    end
-    
-    subgraph "🔧 Development"
-        VENV["📁 planner_env/"]
-        REQ["📄 requirements.txt"]
-        SETUP["📄 setup.py"]
-    end
-    
-    ROOT --> CORE
-    ROOT --> CHAINS
-    ROOT --> TEMPLATES
-    ROOT --> CONFIG
-    ROOT --> UTILS
-    ROOT --> LOGS
-    ROOT --> MAIN
-    ROOT --> VENV
-    ROOT --> REQ
-    ROOT --> SETUP
-    ROOT --> ENV
-    
-    CORE --> CORE_PY
-    CHAINS --> CHAIN_PY
-    TEMPLATES --> STYLE
-    CONFIG --> CONFIG_YAML
-    CONFIG --> API_CONFIG
-    CONFIG --> PATH_CONFIG
-    UTILS --> LOGGER
-    UTILS --> EXCEPTION
-    UTILS --> COMMON
-    LOGS --> LOG_FILES
-    
-    classDef core fill:#e8f5e8,stroke:#2e7d32,stroke-width:2px
-    classDef ui fill:#e3f2fd,stroke:#1976d2,stroke-width:2px
-    classDef config fill:#fff3e0,stroke:#f57c00,stroke-width:2px
-    classDef utils fill:#f3e5f5,stroke:#7b1fa2,stroke-width:2px
-    classDef data fill:#fce4ec,stroke:#c2185b,stroke-width:2px
-    classDef dev fill:#f1f8e9,stroke:#388e3c,stroke-width:2px
-    
-    class CORE,CHAINS,CORE_PY,CHAIN_PY core
-    class TEMPLATES,MAIN,STYLE ui
-    class CONFIG,CONFIG_YAML,API_CONFIG,PATH_CONFIG config
-    class UTILS,LOGGER,EXCEPTION,COMMON utils
-    class LOGS,ENV,LOG_FILES data
-    class VENV,REQ,SETUP dev
-```
-
-### 4.2 Module Dependency Graph
+### 4.1 Module Dependency Graph
 
 ```mermaid
 graph TB
@@ -375,50 +249,7 @@ journey
       Save/Share: 3: User
 ```
 
-### 5.2 Detailed Data Processing Flow
-
-```mermaid
-flowchart TD
-    START(["👤 User Starts"]) --> INPUT["📝 Input Form<br/>• City<br/>• Interests<br/>• Days"]
-    
-    INPUT --> VALIDATE{"✅ Validate<br/>Input?"}
-    VALIDATE -->|❌ Invalid| ERROR["⚠️ Show Error<br/>Message"]
-    ERROR --> INPUT
-    
-    VALIDATE -->|✅ Valid| INIT["🚀 Initialize<br/>Travel Planner"]
-    INIT --> SET_DATA["📋 Set User Data<br/>• set_city()<br/>• set_interests()<br/>• set_days()"]
-    
-    SET_DATA --> CREATE["🔄 Create Itinerary<br/>create_itinerary()"]
-    CREATE --> LLM_INIT["🤖 Initialize<br/>LLM Model"]
-    
-    LLM_INIT --> PROMPT["📝 Format Prompt<br/>with User Data"]
-    PROMPT --> API_CALL["☁️ Call Groq API<br/>Send Formatted Prompt"]
-    
-    API_CALL --> API_RESPONSE{"📡 API<br/>Response?"}
-    API_RESPONSE -->|❌ Error| API_ERROR["🚨 Handle<br/>API Error"]
-    API_ERROR --> LOG_ERROR["📝 Log Error"]
-    LOG_ERROR --> ERROR
-    
-    API_RESPONSE -->|✅ Success| PROCESS["🔄 Process<br/>AI Response"]
-    PROCESS --> STREAM["📺 Stream Results<br/>to UI"]
-    
-    STREAM --> DISPLAY["🎯 Display<br/>Itinerary"]
-    DISPLAY --> LOG_SUCCESS["📝 Log Success"]
-    LOG_SUCCESS --> END(["✨ Journey Complete"])
-    
-    classDef start fill:#e8f5e8,stroke:#4caf50,stroke-width:3px
-    classDef process fill:#e3f2fd,stroke:#2196f3,stroke-width:2px
-    classDef decision fill:#fff3e0,stroke:#ff9800,stroke-width:2px
-    classDef error fill:#ffebee,stroke:#f44336,stroke-width:2px
-    classDef end fill:#f3e5f5,stroke:#9c27b0,stroke-width:3px
-    
-    class START,END start
-    class INPUT,INIT,SET_DATA,CREATE,LLM_INIT,PROMPT,API_CALL,PROCESS,STREAM,DISPLAY,LOG_SUCCESS process
-    class VALIDATE,API_RESPONSE decision
-    class ERROR,API_ERROR,LOG_ERROR error
-```
-
-### 5.3 Real-time Data Streaming Architecture
+### 5.2 Real-time Data Streaming Architecture
 
 ```mermaid
 sequenceDiagram
