@@ -20,42 +20,155 @@ The AI Travel Planner is an intelligent web application that generates personali
 
 ## 2. System Architecture
 
-### 2.1 Architecture Overview
+### 2.1 High-Level Architecture Overview
+
+```mermaid
+graph TB
+    subgraph "🌐 User Interface Layer"
+        UI["🖥️ Streamlit Web App<br/>• Responsive Design<br/>• Custom Styling<br/>• Form Handling"]
+        TEMP["🎨 Templates & Styling<br/>• CSS Animations<br/>• UI Components<br/>• Responsive Layout"]
+    end
+    
+    subgraph "🧠 Business Logic Layer"
+        PLANNER["📋 Travel Planner Core<br/>• Trip Orchestration<br/>• Data Validation<br/>• Workflow Management"]
+        CHAIN["🔗 LLM Chain<br/>• AI Model Integration<br/>• Prompt Management<br/>• Response Processing"]
+    end
+    
+    subgraph "🔧 Infrastructure Layer"
+        CONFIG["⚙️ Configuration<br/>• YAML Settings<br/>• Environment Variables<br/>• Path Management"]
+        UTILS["🛠️ Utilities<br/>• Logging System<br/>• Exception Handling<br/>• Common Functions"]
+    end
+    
+    subgraph "☁️ External Services"
+        GROQ["🤖 Groq API<br/>• LLM Processing<br/>• AI Generation<br/>• Natural Language"]
+    end
+    
+    UI --> PLANNER
+    PLANNER --> CHAIN
+    CHAIN --> GROQ
+    TEMP --> UI
+    CONFIG --> PLANNER
+    CONFIG --> CHAIN
+    UTILS --> PLANNER
+    UTILS --> CHAIN
+    
+    classDef frontend fill:#e1f5fe,stroke:#01579b,stroke-width:2px
+    classDef business fill:#f3e5f5,stroke:#4a148c,stroke-width:2px
+    classDef infra fill:#e8f5e8,stroke:#1b5e20,stroke-width:2px
+    classDef external fill:#fff3e0,stroke:#e65100,stroke-width:2px
+    
+    class UI,TEMP frontend
+    class PLANNER,CHAIN business
+    class CONFIG,UTILS infra
+    class GROQ external
 ```
-┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
-│   Frontend      │    │   Backend       │    │   External      │
-│   (Streamlit)   │◄──►│   (Python)      │◄──►│   (Groq API)    │
-│                 │    │                 │    │                 │
-│ - User Interface│    │ - Business Logic│    │ - LLM Service   │
-│ - Form Handling │    │ - Data Processing│    │ - AI Generation │
-│ - Styling       │    │ - API Integration│    │                 │
-└─────────────────┘    └─────────────────┘    └─────────────────┘
-         │                       │                       │
-         │                       │                       │
-         ▼                       ▼                       ▼
-┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
-│   Templates     │    │   Configuration │    │   Logging       │
-│   & Styling     │    │   & Utils       │    │   System        │
-└─────────────────┘    └─────────────────┘    └─────────────────┘
+
+### 2.2 Detailed System Flow
+
+```mermaid
+sequenceDiagram
+    participant U as 👤 User
+    participant ST as 🖥️ Streamlit UI
+    participant TP as 📋 Travel Planner
+    participant LLM as 🔗 LLM Chain
+    participant API as 🤖 Groq API
+    participant LOG as 📝 Logger
+    
+    U->>ST: Enter travel details
+    ST->>TP: Initialize planner
+    TP->>LOG: Log initialization
+    
+    ST->>TP: Set city, interests, days
+    TP->>LOG: Log user inputs
+    
+    ST->>TP: Create itinerary
+    TP->>LLM: Request AI generation
+    LLM->>API: Send formatted prompt
+    API-->>LLM: Return AI response
+    LLM-->>TP: Process response
+    TP->>LOG: Log successful generation
+    TP-->>ST: Stream itinerary
+    ST-->>U: Display results
+    
+    Note over U,LOG: Real-time streaming with comprehensive logging
 ```
 
-### 2.2 Component Architecture
+### 2.3 Layered Architecture Design
 
-#### 2.2.1 Presentation Layer
-- **Streamlit Frontend**: Web interface with custom CSS styling
-- **Templates Module**: UI components and styling management
-- **User Input Forms**: City, interests, and duration collection
+```mermaid
+graph LR
+    subgraph "🎯 Presentation Layer"
+        direction TB
+        A1["🖥️ Streamlit Frontend"]
+        A2["🎨 Custom Styling"]
+        A3["📝 Form Components"]
+        A4["✨ Animations"]
+    end
+    
+    subgraph "🧠 Business Layer"
+        direction TB
+        B1["📋 Travel Planner"]
+        B2["🔗 LLM Integration"]
+        B3["🔄 Data Processing"]
+        B4["✅ Validation"]
+    end
+    
+    subgraph "🔧 Infrastructure Layer"
+        direction TB
+        C1["⚙️ Configuration"]
+        C2["📝 Logging"]
+        C3["🛡️ Exception Handling"]
+        C4["🔐 Security"]
+    end
+    
+    subgraph "💾 Data Layer"
+        direction TB
+        D1["📄 YAML Config"]
+        D2["🔑 Environment"]
+        D3["📊 Log Files"]
+    end
+    
+    A1 --> B1
+    A2 --> A1
+    A3 --> A1
+    A4 --> A1
+    
+    B1 --> B2
+    B2 --> B3
+    B3 --> B4
+    
+    B1 --> C1
+    B2 --> C2
+    B3 --> C3
+    B4 --> C4
+    
+    C1 --> D1
+    C1 --> D2
+    C2 --> D3
+    
+    classDef presentation fill:#e3f2fd,stroke:#1976d2,stroke-width:2px
+    classDef business fill:#f1f8e9,stroke:#388e3c,stroke-width:2px
+    classDef infrastructure fill:#fce4ec,stroke:#c2185b,stroke-width:2px
+    classDef data fill:#fff8e1,stroke:#f57c00,stroke-width:2px
+    
+    class A1,A2,A3,A4 presentation
+    class B1,B2,B3,B4 business
+    class C1,C2,C3,C4 infrastructure
+    class D1,D2,D3 data
+```
 
-#### 2.2.2 Business Logic Layer
-- **Travel Planner Core**: Main orchestration logic
-- **LLM Chain**: AI model integration and prompt management
-- **Data Processing**: Input validation and formatting
+### 2.4 Component Interaction Matrix
 
-#### 2.2.3 Infrastructure Layer
-- **Configuration Management**: YAML-based settings
-- **Logging System**: Structured logging with file rotation
-- **Exception Handling**: Custom error management
-- **Environment Management**: Secure API key handling
+| Component | Frontend | Planner | LLM Chain | Config | Utils | External API |
+|-----------|----------|---------|-----------|--------|-------|-------------|
+| **Frontend** | ● | ↔️ | - | - | ↔️ | - |
+| **Planner** | ↔️ | ● | ↔️ | ↔️ | ↔️ | - |
+| **LLM Chain** | - | ↔️ | ● | ↔️ | ↔️ | ↔️ |
+| **Config** | - | ↔️ | ↔️ | ● | - | - |
+| **Utils** | ↔️ | ↔️ | ↔️ | - | ● | - |
+| **External API** | - | - | ↔️ | - | - | ● |
+
+**Legend**: ● Self | ↔️ Bidirectional | → Unidirectional | - No Direct Interaction
 
 ## 3. Detailed Component Design
 
@@ -100,57 +213,243 @@ The AI Travel Planner is an intelligent web application that generates personali
 - **Responsive Layout**: Mobile-friendly interface
 - **Interactive Elements**: Animated components and effects
 
-## 4. Project Structure
+## 4. Project Structure & Architecture
 
-```
-AI-TRAVELL-PLANNER/
-├── chains/                     # AI/LLM Integration
-│   ├── __init__.py
-│   └── itinerary_chain.py     # LLM model and prompt management
-├── config/                     # Configuration Management
-│   ├── __init__.py
-│   ├── api_config.py          # API credentials
-│   ├── config.yaml            # Model parameters and prompts
-│   └── path_config.py         # File path configurations
-├── core/                       # Business Logic
-│   ├── __init__.py
-│   └── planner.py             # Main travel planning logic
-├── logs/                       # Application Logs
-│   └── log_YYYY-MM-DD.log     # Daily log files
-├── templates/                  # UI Components
-│   ├── __init__.py
-│   └── style.py               # Custom CSS and styling
-├── utils/                      # Utility Functions
-│   ├── __init__.py
-│   ├── common_function.py     # Shared utilities
-│   ├── custom_exception.py    # Exception handling
-│   └── logger.py              # Logging configuration
-├── planner_env/               # Virtual Environment
-├── main.py                    # Streamlit application entry point
-├── requirements.txt           # Python dependencies
-├── setup.py                   # Package configuration
-├── .env                       # Environment variables
-├── .gitignore                 # Git ignore rules
-└── README.md                  # Project documentation
+### 4.1 Directory Tree with Visual Hierarchy
+
+```mermaid
+graph TD
+    ROOT["🏠 AI-TRAVELL-PLANNER/"]
+    
+    subgraph "🧠 Core Business Logic"
+        CORE["📁 core/"]
+        CHAINS["📁 chains/"]
+        CORE_PY["📄 planner.py"]
+        CHAIN_PY["📄 itinerary_chain.py"]
+    end
+    
+    subgraph "🎨 User Interface"
+        TEMPLATES["📁 templates/"]
+        MAIN["📄 main.py"]
+        STYLE["📄 style.py"]
+    end
+    
+    subgraph "⚙️ Configuration"
+        CONFIG["📁 config/"]
+        CONFIG_YAML["📄 config.yaml"]
+        API_CONFIG["📄 api_config.py"]
+        PATH_CONFIG["📄 path_config.py"]
+    end
+    
+    subgraph "🛠️ Utilities"
+        UTILS["📁 utils/"]
+        LOGGER["📄 logger.py"]
+        EXCEPTION["📄 custom_exception.py"]
+        COMMON["📄 common_function.py"]
+    end
+    
+    subgraph "📊 Data & Logs"
+        LOGS["📁 logs/"]
+        ENV["📄 .env"]
+        LOG_FILES["📄 log_YYYY-MM-DD.log"]
+    end
+    
+    subgraph "🔧 Development"
+        VENV["📁 planner_env/"]
+        REQ["📄 requirements.txt"]
+        SETUP["📄 setup.py"]
+    end
+    
+    ROOT --> CORE
+    ROOT --> CHAINS
+    ROOT --> TEMPLATES
+    ROOT --> CONFIG
+    ROOT --> UTILS
+    ROOT --> LOGS
+    ROOT --> MAIN
+    ROOT --> VENV
+    ROOT --> REQ
+    ROOT --> SETUP
+    ROOT --> ENV
+    
+    CORE --> CORE_PY
+    CHAINS --> CHAIN_PY
+    TEMPLATES --> STYLE
+    CONFIG --> CONFIG_YAML
+    CONFIG --> API_CONFIG
+    CONFIG --> PATH_CONFIG
+    UTILS --> LOGGER
+    UTILS --> EXCEPTION
+    UTILS --> COMMON
+    LOGS --> LOG_FILES
+    
+    classDef core fill:#e8f5e8,stroke:#2e7d32,stroke-width:2px
+    classDef ui fill:#e3f2fd,stroke:#1976d2,stroke-width:2px
+    classDef config fill:#fff3e0,stroke:#f57c00,stroke-width:2px
+    classDef utils fill:#f3e5f5,stroke:#7b1fa2,stroke-width:2px
+    classDef data fill:#fce4ec,stroke:#c2185b,stroke-width:2px
+    classDef dev fill:#f1f8e9,stroke:#388e3c,stroke-width:2px
+    
+    class CORE,CHAINS,CORE_PY,CHAIN_PY core
+    class TEMPLATES,MAIN,STYLE ui
+    class CONFIG,CONFIG_YAML,API_CONFIG,PATH_CONFIG config
+    class UTILS,LOGGER,EXCEPTION,COMMON utils
+    class LOGS,ENV,LOG_FILES data
+    class VENV,REQ,SETUP dev
 ```
 
-## 5. Data Flow
+### 4.2 Module Dependency Graph
 
-### 5.1 User Journey Flow
-```
-User Input → Form Validation → Travel Planner → LLM Chain → AI API → Response Processing → UI Display
+```mermaid
+graph TB
+    MAIN["🚀 main.py<br/><small>Entry Point</small>"]
+    
+    subgraph "Business Logic"
+        PLANNER["📋 planner.py<br/><small>Core Logic</small>"]
+        CHAIN["🔗 itinerary_chain.py<br/><small>AI Integration</small>"]
+    end
+    
+    subgraph "Infrastructure"
+        LOGGER["📝 logger.py<br/><small>Logging</small>"]
+        EXCEPTION["🛡️ custom_exception.py<br/><small>Error Handling</small>"]
+        COMMON["🔧 common_function.py<br/><small>Utilities</small>"]
+    end
+    
+    subgraph "Configuration"
+        CONFIG["⚙️ config.yaml<br/><small>Settings</small>"]
+        API["🔑 api_config.py<br/><small>Credentials</small>"]
+        PATH["📂 path_config.py<br/><small>Paths</small>"]
+    end
+    
+    subgraph "UI Layer"
+        STYLE["🎨 style.py<br/><small>Styling</small>"]
+    end
+    
+    MAIN --> PLANNER
+    MAIN --> STYLE
+    PLANNER --> CHAIN
+    PLANNER --> LOGGER
+    PLANNER --> EXCEPTION
+    PLANNER --> COMMON
+    CHAIN --> API
+    CHAIN --> LOGGER
+    CHAIN --> EXCEPTION
+    COMMON --> CONFIG
+    LOGGER --> PATH
+    
+    classDef entry fill:#ffebee,stroke:#d32f2f,stroke-width:3px
+    classDef business fill:#e8f5e8,stroke:#388e3c,stroke-width:2px
+    classDef infra fill:#e3f2fd,stroke:#1976d2,stroke-width:2px
+    classDef config fill:#fff8e1,stroke:#f57c00,stroke-width:2px
+    classDef ui fill:#f3e5f5,stroke:#7b1fa2,stroke-width:2px
+    
+    class MAIN entry
+    class PLANNER,CHAIN business
+    class LOGGER,EXCEPTION,COMMON infra
+    class CONFIG,API,PATH config
+    class STYLE ui
 ```
 
-### 5.2 Detailed Data Flow
-1. **Input Collection**: User enters city, interests, and days via Streamlit form
-2. **Data Validation**: Input sanitization and format validation
-3. **Planner Initialization**: TravelPlanner instance created with user data
-4. **LLM Processing**: 
-   - Model initialization with Groq API
-   - Prompt formatting with user parameters
-   - AI-generated itinerary creation
-5. **Response Handling**: Streaming display of generated content
-6. **Logging**: All operations logged for monitoring and debugging
+## 5. Data Flow Architecture
+
+### 5.1 Complete User Journey Visualization
+
+```mermaid
+journey
+    title AI Travel Planner User Journey
+    section Planning Phase
+      Open Application: 5: User
+      View Interface: 4: User
+      Fill Travel Form: 3: User
+    section Processing Phase
+      Submit Request: 5: User
+      Validate Input: 4: System
+      Initialize Planner: 4: System
+      Generate Prompt: 5: System
+    section AI Generation
+      Call Groq API: 5: System
+      Process Response: 4: System
+      Stream Results: 5: System
+    section Result Phase
+      View Itinerary: 5: User
+      Save/Share: 3: User
+```
+
+### 5.2 Detailed Data Processing Flow
+
+```mermaid
+flowchart TD
+    START(["👤 User Starts"]) --> INPUT["📝 Input Form<br/>• City<br/>• Interests<br/>• Days"]
+    
+    INPUT --> VALIDATE{"✅ Validate<br/>Input?"}
+    VALIDATE -->|❌ Invalid| ERROR["⚠️ Show Error<br/>Message"]
+    ERROR --> INPUT
+    
+    VALIDATE -->|✅ Valid| INIT["🚀 Initialize<br/>Travel Planner"]
+    INIT --> SET_DATA["📋 Set User Data<br/>• set_city()<br/>• set_interests()<br/>• set_days()"]
+    
+    SET_DATA --> CREATE["🔄 Create Itinerary<br/>create_itinerary()"]
+    CREATE --> LLM_INIT["🤖 Initialize<br/>LLM Model"]
+    
+    LLM_INIT --> PROMPT["📝 Format Prompt<br/>with User Data"]
+    PROMPT --> API_CALL["☁️ Call Groq API<br/>Send Formatted Prompt"]
+    
+    API_CALL --> API_RESPONSE{"📡 API<br/>Response?"}
+    API_RESPONSE -->|❌ Error| API_ERROR["🚨 Handle<br/>API Error"]
+    API_ERROR --> LOG_ERROR["📝 Log Error"]
+    LOG_ERROR --> ERROR
+    
+    API_RESPONSE -->|✅ Success| PROCESS["🔄 Process<br/>AI Response"]
+    PROCESS --> STREAM["📺 Stream Results<br/>to UI"]
+    
+    STREAM --> DISPLAY["🎯 Display<br/>Itinerary"]
+    DISPLAY --> LOG_SUCCESS["📝 Log Success"]
+    LOG_SUCCESS --> END(["✨ Journey Complete"])
+    
+    classDef start fill:#e8f5e8,stroke:#4caf50,stroke-width:3px
+    classDef process fill:#e3f2fd,stroke:#2196f3,stroke-width:2px
+    classDef decision fill:#fff3e0,stroke:#ff9800,stroke-width:2px
+    classDef error fill:#ffebee,stroke:#f44336,stroke-width:2px
+    classDef end fill:#f3e5f5,stroke:#9c27b0,stroke-width:3px
+    
+    class START,END start
+    class INPUT,INIT,SET_DATA,CREATE,LLM_INIT,PROMPT,API_CALL,PROCESS,STREAM,DISPLAY,LOG_SUCCESS process
+    class VALIDATE,API_RESPONSE decision
+    class ERROR,API_ERROR,LOG_ERROR error
+```
+
+### 5.3 Real-time Data Streaming Architecture
+
+```mermaid
+sequenceDiagram
+    participant UI as 🖥️ Streamlit UI
+    participant TP as 📋 Travel Planner
+    participant LLM as 🔗 LLM Chain
+    participant API as 🤖 Groq API
+    participant STREAM as 📺 Stream Handler
+    participant LOG as 📝 Logger
+    
+    Note over UI,LOG: Real-time Streaming Process
+    
+    UI->>TP: User submits form
+    TP->>LOG: Log user input
+    
+    TP->>LLM: Initialize model
+    LLM->>API: Send prompt
+    
+    loop Streaming Response
+        API-->>LLM: Chunk of response
+        LLM-->>TP: Process chunk
+        TP-->>STREAM: Format chunk
+        STREAM-->>UI: Display chunk
+        UI-->>UI: Update display
+    end
+    
+    TP->>LOG: Log completion
+    UI->>UI: Show final result
+    
+    Note over UI,LOG: Complete itinerary displayed with real-time updates
+```
 
 ## 6. Technology Stack
 
