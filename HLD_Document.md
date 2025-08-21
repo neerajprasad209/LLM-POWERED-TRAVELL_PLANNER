@@ -254,6 +254,12 @@ graph TD
         LOG_FILES["📄 log_YYYY-MM-DD.log"]
     end
     
+    subgraph "☁️ Kubernetes & Monitoring"
+        FILEBEAT["📄 filebeat.yaml"]
+        K8S_CONFIG["⚙️ K8s Configuration"]
+        LOG_SHIPPING["📦 Log Shipping"]
+    end
+    
     subgraph "🔧 Development"
         VENV["📁 planner_env/"]
         REQ["📄 requirements.txt"]
@@ -267,6 +273,7 @@ graph TD
     ROOT --> UTILS
     ROOT --> LOGS
     ROOT --> MAIN
+    ROOT --> FILEBEAT
     ROOT --> VENV
     ROOT --> REQ
     ROOT --> SETUP
@@ -282,12 +289,15 @@ graph TD
     UTILS --> EXCEPTION
     UTILS --> COMMON
     LOGS --> LOG_FILES
+    FILEBEAT --> K8S_CONFIG
+    FILEBEAT --> LOG_SHIPPING
     
     classDef core fill:#e8f5e8,stroke:#2e7d32,stroke-width:2px
     classDef ui fill:#e3f2fd,stroke:#1976d2,stroke-width:2px
     classDef config fill:#fff3e0,stroke:#f57c00,stroke-width:2px
     classDef utils fill:#f3e5f5,stroke:#7b1fa2,stroke-width:2px
     classDef data fill:#fce4ec,stroke:#c2185b,stroke-width:2px
+    classDef k8s fill:#e0f2f1,stroke:#00695c,stroke-width:2px
     classDef dev fill:#f1f8e9,stroke:#388e3c,stroke-width:2px
     
     class CORE,CHAINS,CORE_PY,CHAIN_PY core
@@ -295,6 +305,7 @@ graph TD
     class CONFIG,CONFIG_YAML,API_CONFIG,PATH_CONFIG config
     class UTILS,LOGGER,EXCEPTION,COMMON utils
     class LOGS,ENV,LOG_FILES data
+    class FILEBEAT,K8S_CONFIG,LOG_SHIPPING k8s
     class VENV,REQ,SETUP dev
 ```
 
@@ -470,6 +481,13 @@ python-dotenv          # Environment variable management
 setuptools             # Package management
 ```
 
+### 6.3 Kubernetes & Monitoring Stack
+- **Filebeat 7.17.28**: Container log collection and shipping
+- **Kubernetes RBAC**: Service accounts and cluster permissions
+- **ConfigMaps & DaemonSets**: Kubernetes-native configuration management
+- **Logstash Integration**: Centralized log processing pipeline
+- **ELK Stack Ready**: Elasticsearch, Logstash, Kibana compatibility
+
 ### 6.3 Development Tools
 - **Virtual Environment**: Isolated Python environment
 - **YAML Configuration**: Structured configuration management
@@ -576,17 +594,62 @@ streamlit run main.py
 
 ## 11. Monitoring & Maintenance
 
-### 11.1 Logging Strategy
-- **Daily Log Rotation**: Automatic log file management
-- **Structured Logging**: Consistent log format with timestamps
-- **Error Tracking**: Comprehensive exception logging
-- **Performance Monitoring**: Request/response time tracking
+### 11.1 Enhanced Logging & Monitoring Architecture
 
-### 11.2 Maintenance Tasks
-- **Log Management**: Regular log cleanup and archival
-- **Dependency Updates**: Regular package updates
-- **API Monitoring**: Groq API usage and rate limiting
-- **Performance Optimization**: Response time improvements
+```mermaid
+graph TB
+    subgraph "📊 Application Logging"
+        APP_LOGS["📝 Application Logs<br/>• Daily Rotation<br/>• Structured Format<br/>• Error Tracking"]
+        PYTHON_LOGGER["🐍 Python Logger<br/>• Custom Handlers<br/>• Log Levels<br/>• File Output"]
+    end
+    
+    subgraph "☁️ Kubernetes Monitoring"
+        FILEBEAT["📦 Filebeat DaemonSet<br/>• Container Log Collection<br/>• Kubernetes Metadata<br/>• Real-time Shipping"]
+        K8S_LOGS["📁 Container Logs<br/>• /var/log/containers/<br/>• Pod Metadata<br/>• Node Information"]
+    end
+    
+    subgraph "📊 Centralized Logging"
+        LOGSTASH["🔄 Logstash<br/>• Log Processing<br/>• Data Transformation<br/>• Filtering & Parsing"]
+        ELASTICSEARCH["🔍 Elasticsearch<br/>• Log Storage<br/>• Search & Analytics<br/>• Index Management"]
+        KIBANA["📊 Kibana Dashboard<br/>• Log Visualization<br/>• Real-time Monitoring<br/>• Alert Management"]
+    end
+    
+    APP_LOGS --> PYTHON_LOGGER
+    PYTHON_LOGGER --> K8S_LOGS
+    K8S_LOGS --> FILEBEAT
+    FILEBEAT --> LOGSTASH
+    LOGSTASH --> ELASTICSEARCH
+    ELASTICSEARCH --> KIBANA
+    
+    classDef app fill:#e3f2fd,stroke:#1976d2,stroke-width:2px
+    classDef k8s fill:#e0f2f1,stroke:#00695c,stroke-width:2px
+    classDef elk fill:#fff3e0,stroke:#f57c00,stroke-width:2px
+    
+    class APP_LOGS,PYTHON_LOGGER app
+    class FILEBEAT,K8S_LOGS k8s
+    class LOGSTASH,ELASTICSEARCH,KIBANA elk
+```
+
+### 11.2 Filebeat Configuration Overview
+
+**Key Components**:
+- **ConfigMap**: Filebeat configuration for log collection
+- **DaemonSet**: Ensures Filebeat runs on every Kubernetes node
+- **RBAC**: Service accounts and permissions for cluster access
+- **Volume Mounts**: Access to container logs and Docker directories
+
+**Log Processing Flow**:
+1. **Container Logs** → Collected from `/var/log/containers/`
+2. **Kubernetes Metadata** → Added automatically (pod, namespace, node info)
+3. **Logstash Output** → Shipped to centralized logging system
+4. **Cloud & Host Metadata** → Enhanced with infrastructure context
+
+### 11.3 Maintenance Tasks
+- **Log Management**: Automated log rotation and archival via Filebeat
+- **Dependency Updates**: Regular package and container image updates
+- **API Monitoring**: Groq API usage tracking through centralized logs
+- **Performance Optimization**: Real-time metrics via Kubernetes monitoring
+- **Security Monitoring**: RBAC compliance and access pattern analysis
 
 ## 12. Future Enhancements
 
