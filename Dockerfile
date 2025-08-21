@@ -1,5 +1,5 @@
 # Parent Image
-FROM python:3.10-slim
+FROM python:3.12-slim
 
 ## Essential Environment Variables
 ENV PYTHONDONTWRITEBYTECODE=1 \
