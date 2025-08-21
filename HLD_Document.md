@@ -52,10 +52,10 @@ graph TB
     UTILS --> PLANNER
     UTILS --> CHAIN
     
-    classDef frontend fill:#e1f5fe,stroke:#01579b,stroke-width:2px
-    classDef business fill:#f3e5f5,stroke:#4a148c,stroke-width:2px
-    classDef infra fill:#e8f5e8,stroke:#1b5e20,stroke-width:2px
-    classDef external fill:#fff3e0,stroke:#e65100,stroke-width:2px
+    classDef frontend fill:#e1f5fe,stroke:#01579b,stroke-width:2px,color:#000000
+    classDef business fill:#f3e5f5,stroke:#4a148c,stroke-width:2px,color:#000000
+    classDef infra fill:#e8f5e8,stroke:#1b5e20,stroke-width:2px,color:#000000
+    classDef external fill:#fff3e0,stroke:#e65100,stroke-width:2px,color:#000000
     
     class UI,TEMP frontend
     class PLANNER,CHAIN business
@@ -146,10 +146,10 @@ graph LR
     C1 --> D2
     C2 --> D3
     
-    classDef presentation fill:#e3f2fd,stroke:#1976d2,stroke-width:2px
-    classDef business fill:#f1f8e9,stroke:#388e3c,stroke-width:2px
-    classDef infrastructure fill:#fce4ec,stroke:#c2185b,stroke-width:2px
-    classDef data fill:#fff8e1,stroke:#f57c00,stroke-width:2px
+    classDef presentation fill:#e3f2fd,stroke:#1976d2,stroke-width:2px,color:#000000
+    classDef business fill:#f1f8e9,stroke:#388e3c,stroke-width:2px,color:#000000
+    classDef infrastructure fill:#fce4ec,stroke:#c2185b,stroke-width:2px,color:#000000
+    classDef data fill:#fff8e1,stroke:#f57c00,stroke-width:2px,color:#000000
     
     class A1,A2,A3,A4 presentation
     class B1,B2,B3,B4 business
@@ -292,9 +292,21 @@ graph TD
     FILEBEAT --> K8S_CONFIG
     FILEBEAT --> LOG_SHIPPING
     
-    classDef core fill:#e8f5e8,stroke:#2e7d32,stroke-width:2px
-    classDef ui fill:#e3f2fd,stroke:#1976d2,stroke-width:2px
-    classDef config fill:#fff3e0,stroke:#f57c00,stroke-width:2px
+    classDef core fill:#e8f5e8,stroke:#2e7d32,stroke-width:2px,color:#000000
+    classDef ui fill:#e3f2fd,stroke:#1976d2,stroke-width:2px,color:#000000
+    classDef config fill:#fff3e0,stroke:#f57c00,stroke-width:2px,color:#000000
+    classDef utils fill:#f3e5f5,stroke:#7b1fa2,stroke-width:2px,color:#000000
+    classDef data fill:#fce4ec,stroke:#c2185b,stroke-width:2px,color:#000000
+    classDef k8s fill:#e0f2f1,stroke:#00695c,stroke-width:2px,color:#000000
+    classDef dev fill:#f1f8e9,stroke:#388e3c,stroke-width:2px,color:#000000
+    
+    class CORE,CHAINS,CORE_PY,CHAIN_PY core
+    class TEMPLATES,MAIN,STYLE ui
+    class CONFIG,CONFIG_YAML,API_CONFIG,PATH_CONFIG config
+    class UTILS,LOGGER,EXCEPTION,COMMON utils
+    class LOGS,ENV,LOG_FILES data
+    class FILEBEAT,K8S_CONFIG,LOG_SHIPPING k8s
+    class VENV,REQ,SETUP devstroke-width:2px
     classDef utils fill:#f3e5f5,stroke:#7b1fa2,stroke-width:2px
     classDef data fill:#fce4ec,stroke:#c2185b,stroke-width:2px
     classDef k8s fill:#e0f2f1,stroke:#00695c,stroke-width:2px
@@ -348,11 +360,11 @@ graph TB
     COMMON --> CONFIG
     LOGGER --> PATH
     
-    classDef entry fill:#ffebee,stroke:#d32f2f,stroke-width:3px
-    classDef business fill:#e8f5e8,stroke:#388e3c,stroke-width:2px
-    classDef infra fill:#e3f2fd,stroke:#1976d2,stroke-width:2px
-    classDef config fill:#fff8e1,stroke:#f57c00,stroke-width:2px
-    classDef ui fill:#f3e5f5,stroke:#7b1fa2,stroke-width:2px
+    classDef entry fill:#ffebee,stroke:#d32f2f,stroke-width:3px,color:#000000
+    classDef business fill:#e8f5e8,stroke:#388e3c,stroke-width:2px,color:#000000
+    classDef infra fill:#e3f2fd,stroke:#1976d2,stroke-width:2px,color:#000000
+    classDef config fill:#fff8e1,stroke:#f57c00,stroke-width:2px,color:#000000
+    classDef ui fill:#f3e5f5,stroke:#7b1fa2,stroke-width:2px,color:#000000
     
     class MAIN entry
     class PLANNER,CHAIN business
@@ -417,11 +429,11 @@ flowchart TD
     DISPLAY --> LOG_SUCCESS["📝 Log Success"]
     LOG_SUCCESS --> END(["✨ Journey Complete"])
     
-    classDef startNode fill:#e8f5e8,stroke:#4caf50,stroke-width:3px
-    classDef processNode fill:#e3f2fd,stroke:#2196f3,stroke-width:2px
-    classDef decisionNode fill:#fff3e0,stroke:#ff9800,stroke-width:2px
-    classDef errorNode fill:#ffebee,stroke:#f44336,stroke-width:2px
-    classDef endNode fill:#f3e5f5,stroke:#9c27b0,stroke-width:3px
+    classDef startNode fill:#e8f5e8,stroke:#4caf50,stroke-width:3px,color:#000000
+    classDef processNode fill:#e3f2fd,stroke:#2196f3,stroke-width:2px,color:#000000
+    classDef decisionNode fill:#fff3e0,stroke:#ff9800,stroke-width:2px,color:#000000
+    classDef errorNode fill:#ffebee,stroke:#f44336,stroke-width:2px,color:#000000
+    classDef endNode fill:#f3e5f5,stroke:#9c27b0,stroke-width:3px,color:#000000
     
     class START,END startNode
     class INPUT,INIT,SET_DATA,CREATE,LLM_INIT,PROMPT,API_CALL,PROCESS,STREAM,DISPLAY,LOG_SUCCESS processNode
@@ -621,9 +633,9 @@ graph TB
     LOGSTASH --> ELASTICSEARCH
     ELASTICSEARCH --> KIBANA
     
-    classDef app fill:#e3f2fd,stroke:#1976d2,stroke-width:2px
-    classDef k8s fill:#e0f2f1,stroke:#00695c,stroke-width:2px
-    classDef elk fill:#fff3e0,stroke:#f57c00,stroke-width:2px
+    classDef app fill:#e3f2fd,stroke:#1976d2,stroke-width:2px,color:#000000
+    classDef k8s fill:#e0f2f1,stroke:#00695c,stroke-width:2px,color:#000000
+    classDef elk fill:#fff3e0,stroke:#f57c00,stroke-width:2px,color:#000000
     
     class APP_LOGS,PYTHON_LOGGER app
     class FILEBEAT,K8S_LOGS k8s
