@@ -256,6 +256,7 @@ graph TD
     
     subgraph "☁️ Kubernetes & Monitoring"
         FILEBEAT["📄 filebeat.yaml"]
+        LOGSTASH_CONFIG["📄 logstash.yaml"]
         K8S_CONFIG["⚙️ K8s Configuration"]
         LOG_SHIPPING["📦 Log Shipping"]
     end
@@ -274,6 +275,7 @@ graph TD
     ROOT --> LOGS
     ROOT --> MAIN
     ROOT --> FILEBEAT
+    ROOT --> LOGSTASH_CONFIG
     ROOT --> VENV
     ROOT --> REQ
     ROOT --> SETUP
@@ -290,7 +292,7 @@ graph TD
     UTILS --> COMMON
     LOGS --> LOG_FILES
     FILEBEAT --> K8S_CONFIG
-    FILEBEAT --> LOG_SHIPPING
+    LOGSTASH_CONFIG --> LOG_SHIPPING
     
     classDef core fill:#e8f5e8,stroke:#2e7d32,stroke-width:2px,color:#000000
     classDef ui fill:#e3f2fd,stroke:#1976d2,stroke-width:2px,color:#000000
@@ -305,7 +307,7 @@ graph TD
     class CONFIG,CONFIG_YAML,API_CONFIG,PATH_CONFIG config
     class UTILS,LOGGER,EXCEPTION,COMMON utils
     class LOGS,ENV,LOG_FILES data
-    class FILEBEAT,K8S_CONFIG,LOG_SHIPPING k8s
+    class FILEBEAT,LOGSTASH_CONFIG,K8S_CONFIG,LOG_SHIPPING k8s
     class VENV,REQ,SETUP devstroke-width:2px
     classDef utils fill:#f3e5f5,stroke:#7b1fa2,stroke-width:2px
     classDef data fill:#fce4ec,stroke:#c2185b,stroke-width:2px
@@ -495,10 +497,11 @@ setuptools             # Package management
 
 ### 6.3 Kubernetes & Monitoring Stack
 - **Filebeat 7.17.28**: Container log collection and shipping
+- **Logstash 7.17.29**: Log processing and transformation pipeline
 - **Kubernetes RBAC**: Service accounts and cluster permissions
 - **ConfigMaps & DaemonSets**: Kubernetes-native configuration management
-- **Logstash Integration**: Centralized log processing pipeline
-- **ELK Stack Ready**: Elasticsearch, Logstash, Kibana compatibility
+- **ELK Stack Integration**: Complete Elasticsearch, Logstash, Kibana setup
+- **Daily Index Rotation**: Automated log archival with `filebeat-YYYY.MM.dd` pattern
 
 ### 6.3 Development Tools
 - **Virtual Environment**: Isolated Python environment
@@ -615,46 +618,60 @@ graph TB
         PYTHON_LOGGER["🐍 Python Logger<br/>• Custom Handlers<br/>• Log Levels<br/>• File Output"]
     end
     
-    subgraph "☁️ Kubernetes Monitoring"
-        FILEBEAT["📦 Filebeat DaemonSet<br/>• Container Log Collection<br/>• Kubernetes Metadata<br/>• Real-time Shipping"]
+    subgraph "☁️ Kubernetes Log Collection"
+        FILEBEAT["📦 Filebeat DaemonSet<br/>• Container Log Collection<br/>• Kubernetes Metadata<br/>• Port 5044 Output"]
         K8S_LOGS["📁 Container Logs<br/>• /var/log/containers/<br/>• Pod Metadata<br/>• Node Information"]
     end
     
-    subgraph "📊 Centralized Logging"
-        LOGSTASH["🔄 Logstash<br/>• Log Processing<br/>• Data Transformation<br/>• Filtering & Parsing"]
-        ELASTICSEARCH["🔍 Elasticsearch<br/>• Log Storage<br/>• Search & Analytics<br/>• Index Management"]
+    subgraph "🔄 Log Processing Pipeline"
+        LOGSTASH["🔄 Logstash Service<br/>• Beats Input (5044)<br/>• Data Transformation<br/>• Daily Index Rotation"]
+        LOGSTASH_CONFIG["⚙️ Logstash ConfigMap<br/>• Pipeline Configuration<br/>• Filter Rules<br/>• Output Settings"]
+    end
+    
+    subgraph "📊 ELK Stack Storage"
+        ELASTICSEARCH["🔍 Elasticsearch<br/>• Index: filebeat-YYYY.MM.dd<br/>• Search & Analytics<br/>• Cluster Storage"]
         KIBANA["📊 Kibana Dashboard<br/>• Log Visualization<br/>• Real-time Monitoring<br/>• Alert Management"]
     end
     
     APP_LOGS --> PYTHON_LOGGER
     PYTHON_LOGGER --> K8S_LOGS
     K8S_LOGS --> FILEBEAT
-    FILEBEAT --> LOGSTASH
-    LOGSTASH --> ELASTICSEARCH
+    FILEBEAT -->|Port 5044| LOGSTASH
+    LOGSTASH_CONFIG --> LOGSTASH
+    LOGSTASH -->|HTTP 9200| ELASTICSEARCH
     ELASTICSEARCH --> KIBANA
     
     classDef app fill:#e3f2fd,stroke:#1976d2,stroke-width:2px,color:#000000
     classDef k8s fill:#e0f2f1,stroke:#00695c,stroke-width:2px,color:#000000
+    classDef pipeline fill:#f3e5f5,stroke:#7b1fa2,stroke-width:2px,color:#000000
     classDef elk fill:#fff3e0,stroke:#f57c00,stroke-width:2px,color:#000000
     
     class APP_LOGS,PYTHON_LOGGER app
     class FILEBEAT,K8S_LOGS k8s
-    class LOGSTASH,ELASTICSEARCH,KIBANA elk
+    class LOGSTASH,LOGSTASH_CONFIG pipeline
+    class ELASTICSEARCH,KIBANA elk
 ```
 
-### 11.2 Filebeat Configuration Overview
+### 11.2 ELK Stack Configuration Overview
 
-**Key Components**:
+**Filebeat Components**:
 - **ConfigMap**: Filebeat configuration for log collection
 - **DaemonSet**: Ensures Filebeat runs on every Kubernetes node
 - **RBAC**: Service accounts and permissions for cluster access
 - **Volume Mounts**: Access to container logs and Docker directories
 
-**Log Processing Flow**:
+**Logstash Components**:
+- **ConfigMap**: Pipeline configuration for log processing
+- **Deployment**: Logstash service with 1 replica
+- **Service**: Internal cluster communication on port 5044
+- **Elasticsearch Output**: Indexed logs with daily rotation
+
+**Complete Log Processing Flow**:
 1. **Container Logs** → Collected from `/var/log/containers/`
-2. **Kubernetes Metadata** → Added automatically (pod, namespace, node info)
-3. **Logstash Output** → Shipped to centralized logging system
-4. **Cloud & Host Metadata** → Enhanced with infrastructure context
+2. **Filebeat Processing** → Kubernetes metadata enrichment
+3. **Logstash Pipeline** → Data transformation and filtering
+4. **Elasticsearch Storage** → Indexed as `filebeat-YYYY.MM.dd`
+5. **Kibana Visualization** → Real-time dashboards and analytics
 
 ### 11.3 Maintenance Tasks
 - **Log Management**: Automated log rotation and archival via Filebeat
